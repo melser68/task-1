@@ -1,5 +1,6 @@
 from pathlib import *
 import shutil , sys, rarfile, os
+from unicodedata import normalize
 
 # Списки розширень для сортування
 list_img = ['.JPEG', '.jpeg', '.PNG', '.png', '.JPG', '.jpg', '.SVG', '.svg']
@@ -39,7 +40,14 @@ def analiz_files(path_file, level=1):
         else:
             #print(Path(i)) 
             rez.append(i)            
-    return rez                     
+    return rez  
+
+
+# Створюємо папку для відсортованих файлів
+def create_folder (path_folder, name_folder):
+    new_folder = Path(path_folder) / name_folder
+    if not Path.exists(new_folder):
+        Path.mkdir(new_folder)
                 
            
 #Робоча директорія для проведення розбору файлів
@@ -79,8 +87,12 @@ def __sorting_files__():
                 print(d)
             print('__________________________________________________________')
             print('Файли фото:')
+            count_foto = 0
             for g in rez_img:
+                rez_img[count_foto] = normalize('NFC', g)
                 print(g)
+                count_foto = count_foto +1                
+            create_folder(sys.argv[1], 'image_sorted')
         if len(suffix_archive) > 0:
             print('__________________________________________________________')
             print('__________________________________________________________')
@@ -90,8 +102,12 @@ def __sorting_files__():
                 print(h)
             print('__________________________________________________________')
             print('Файли архівів:')
+            count_archive = 0
             for k in rez_archive:
+                rez_archive[count_archive] = normalize('NFC', k)
                 print(k)
+                count_archive = count_archive +1
+            create_folder(sys.argv[1], 'archive_sorted')
         if len(suffix_video) > 0:
             print('__________________________________________________________')
             print('__________________________________________________________')
@@ -102,8 +118,12 @@ def __sorting_files__():
                 print(l)
             print('__________________________________________________________')
             print('Файли відео:')
+            count_video = 0
             for z in rez_video:
-                print(z)
+                rez_video[count_video] = normalize('NFC', z)
+                print(z) 
+                count_video = count_video +1               
+            create_folder(sys.argv[1], 'video_sorted')
         if len(suffix_music) > 0:
             print('__________________________________________________________')
             print('__________________________________________________________')
@@ -114,8 +134,12 @@ def __sorting_files__():
                print(x)
             print('__________________________________________________________')
             print('Файли музика:')
+            count_music = 0
             for c in rez_music:
+                rez_music[count_music] = normalize('NFC', c)
                 print(c)
+                count_music = count_music +1
+            create_folder(sys.argv[1], 'music_sorted')
         if len(suffix_document) > 0:
             print('__________________________________________________________')
             print('Результат документи (знайдені розширення та відповідні файли):')
@@ -125,8 +149,12 @@ def __sorting_files__():
                 print(v)
             print('__________________________________________________________')
             print('Файли документів:')
+            count_documents = 0
             for b in rez_documents:
+                rez_documents[count_documents] = normalize('NFC', b)
                 print(b)
+                count_documents = count_documents +1
+            create_folder(sys.argv[1], 'documents_sorted')
         if len (suffix_other) > 0:
             print('__________________________________________________________')
             print('Результат інші файли (знайдені розширення та відповідні файли):')
@@ -136,16 +164,14 @@ def __sorting_files__():
                 print(n)
             print('__________________________________________________________')
             print('Файли інше:')
+            count_other = 0
             for m in rez_other:
-                print(m)
+                rez_other[count_other] = normalize('NFC', m)
+                print(m)  
+                count_other = count_other +1
+            create_folder(sys.argv[1], 'other_sorted')
           
     except:
         print('Введіть шлях до папки')
 
 __sorting_files__()
-
-
-#Створюємо папку для відсортованих файлів
-new_folder = Path.cwd() /'Нова папка'
-if not Path.exists(new_folder):
-    Path.mkdir(new_folder)
