@@ -31,14 +31,10 @@ suffix_other = set()
 
 # Аналіз папки з файлами
 def analiz_files(path_file, level=1):
-    #print('Рівень = ', level, 'Контент = ' , os.listdir(path_file))
-    
     for i in os.listdir(path_file):               
         if os.path.isdir(path_file + '\\' + i):
-            #print('Заходимо у папку: ' + path_file + '\\' + i)
             analiz_files(path_file + '\\' + i, level = level+1)            
         else:
-            #print(Path(i)) 
             rez.append(i)            
     return rez  
 
