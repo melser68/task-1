@@ -7,13 +7,18 @@ from unicodedata import normalize
 
 # Списки розширень для сортування
 list_img = ['.JPEG', '.jpeg', '.PNG', '.png', '.JPG', '.jpg', '.SVG', '.svg']
-list_archive = ['.rar', '.RAR', '.zip', '.ZIP','.gz', '.GZ', '.tar', '.TAR', '.7z', '.7Z']
+list_archive = ['.rar', '.RAR', '.zip', '.ZIP',
+                '.gz', '.GZ', '.tar', '.TAR', '.7z', '.7Z']
 list_video = ['.AVI', '.avi', '.MP4', '.mp4', '.MOV', '.mov', '.MKV', '.mkv']
-list_documents = ['.DOC', '.doc', '.DOCX', '.docs', '.TXT', '.txt','.PDF', '.pdf', '.XLSX', '.xlsx', '.PPTX', '.pptx', '.xml', '.XML']
+list_documents = ['.DOC', '.doc', '.DOCX', '.docs', '.TXT', '.txt',
+                  '.PDF', '.pdf', '.XLSX', '.xlsx', '.PPTX', '.pptx', '.xml', '.XML']
 list_music = ['.MP3', '.mp3', '.OGG', '.ogg', '.WAV', '.wav', '.AMR', '.amr']
 
 # Загальний список файлів
 rez = []
+
+# Список ігноруємих папок
+list_ignore = set()
 
 # Списки відсортованих файлів
 rez_img = []
@@ -47,6 +52,8 @@ def create_folder(path_folder, name_folder):
     new_folder = Path(path_folder) / name_folder
     if not Path.exists(new_folder):
         Path.mkdir(new_folder)
+        list_ignore.add(new_folder)
+        print(list_ignore)
 
 # Складаємо список знайдених суфіксів
 
@@ -91,6 +98,7 @@ def report_create_folder():
             print(g)
             count_foto = count_foto + 1
         create_folder(sys.argv[1], 'image_sorted')
+        
     if len(suffix_archive) > 0:
         print('__________________________________________________________')
         print('__________________________________________________________')
@@ -106,6 +114,7 @@ def report_create_folder():
             print(k)
             count_archive = count_archive + 1
         create_folder(sys.argv[1], 'archive_sorted')
+        
     if len(suffix_video) > 0:
         print('__________________________________________________________')
         print('__________________________________________________________')
@@ -122,6 +131,7 @@ def report_create_folder():
             print(z)
             count_video = count_video + 1
         create_folder(sys.argv[1], 'video_sorted')
+        
     if len(suffix_music) > 0:
         print('__________________________________________________________')
         print('__________________________________________________________')
@@ -138,6 +148,7 @@ def report_create_folder():
             print(c)
             count_music = count_music + 1
         create_folder(sys.argv[1], 'music_sorted')
+        
     if len(suffix_document) > 0:
         print('__________________________________________________________')
         print('Результат документи (знайдені розширення та відповідні файли):')
@@ -153,6 +164,7 @@ def report_create_folder():
             print(b)
             count_documents = count_documents + 1
         create_folder(sys.argv[1], 'documents_sorted')
+        
     if len(suffix_other) > 0:
         print('__________________________________________________________')
         print('Результат інші файли (знайдені розширення та відповідні файли):')
@@ -169,6 +181,7 @@ def report_create_folder():
             count_other = count_other + 1
         create_folder(sys.argv[1], 'other_sorted')
 
+
 # Головна процедура для проведення розбору файлів
 
 
@@ -177,7 +190,8 @@ def __main__():
         dyrectory_current = sys.argv[1]
         analiz_files(dyrectory_current)
         create_list_suffix()
-        report_create_folder()
+        report_create_folder()   
+        print(list_ignore, 'Результат ігнор')     
 
     except:
         print('Введіть шлях до папки')
