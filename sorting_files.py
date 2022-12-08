@@ -81,9 +81,14 @@ def create_list_suffix():
             rez_other.append(j)
             suffix_other.add(Path(j).suffix)
 
+
+#Переносимо файли у відповідні папки
+def move_files(rez_file, folder_move):
+    
+    for file_rez in rez_file:
+        shutil.move(Path(sys.argv[1], file_rez ), folder_move)
+
 # Виводимо повідомлення про знайдене та створюємо папки
-
-
 def report_create_folder():
     if len(suffix_img) > 0:
         print('__________________________________________________________')
@@ -98,11 +103,13 @@ def report_create_folder():
         for g in rez_img:
             rez_img[count_foto] = normalize('NFC', g)
             print(g)
-            count_foto = count_foto + 1
+            count_foto = count_foto + 1            
         create_folder(sys.argv[1], 'image_sorted')
+        move_files(rez_img, Path(sys.argv[1], 'image_sorted'))
+
     else:
         print('__________________________________________________________')
-        print('Файлів типу "Зображення" не знайдено.')
+        print('Несортованих файлів типу "Зображення" не знайдено.')
         print('__________________________________________________________')
         
     if len(suffix_archive) > 0:
@@ -120,9 +127,10 @@ def report_create_folder():
             print(k)
             count_archive = count_archive + 1
         create_folder(sys.argv[1], 'archive_sorted')
+        move_files(rez_archive, Path(sys.argv[1], 'archive_sorted'))
     else:
         print('__________________________________________________________')
-        print('Файлів типу "Архів" не знайдено.')
+        print('Несортованих файлів типу "Архів" не знайдено.')
         print('__________________________________________________________')
         
     if len(suffix_video) > 0:
@@ -141,9 +149,10 @@ def report_create_folder():
             print(z)
             count_video = count_video + 1
         create_folder(sys.argv[1], 'video_sorted')
+        move_files(rez_video, Path(sys.argv[1], 'video_sorted'))
     else:
         print('__________________________________________________________')
-        print('Файлів типу "Відео" не знайдено.')
+        print('Несортованих файлів типу "Відео" не знайдено.')
         print('__________________________________________________________')
 
     if len(suffix_music) > 0:
@@ -162,9 +171,10 @@ def report_create_folder():
             print(c)
             count_music = count_music + 1
         create_folder(sys.argv[1], 'music_sorted')
+        move_files(rez_music, Path(sys.argv[1], 'music_sorted'))
     else:
         print('__________________________________________________________')
-        print('Файлів типу "Музика" не знайдено.')
+        print('Несортованих файлів типу "Музика" не знайдено.')
         print('__________________________________________________________')
 
     if len(suffix_document) > 0:
@@ -182,9 +192,10 @@ def report_create_folder():
             print(b)
             count_documents = count_documents + 1
         create_folder(sys.argv[1], 'documents_sorted')
+        move_files(rez_documents, Path(sys.argv[1], 'documents_sorted'))
     else:
         print('__________________________________________________________')
-        print('Файлів типу "Текстовий документ" не знайдено.')
+        print('Несортованих файлів типу "Текстовий документ" не знайдено.')
         print('__________________________________________________________')
         
     if len(suffix_other) > 0:
@@ -202,9 +213,10 @@ def report_create_folder():
             print(m)
             count_other = count_other + 1
         create_folder(sys.argv[1], 'other_sorted')
+        move_files(rez_other, Path(sys.argv[1], 'other_sorted'))
     else:
         print('__________________________________________________________')
-        print('Файлів невідомого типу не знайдено.')
+        print('Несортованих файлів невідомого типу не знайдено.')
         print('__________________________________________________________')
 
 
