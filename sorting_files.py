@@ -45,55 +45,50 @@ def create_folder (path_folder, name_folder):
     if not Path.exists(new_folder):
         Path.mkdir(new_folder)
                 
-           
-#Робоча директорія для проведення розбору файлів
-def __sorting_files__():
-    try:
-        dyrectory_current = sys.argv[1]
-        analiz_files(dyrectory_current)
-    
-        for j in rez:
-            if Path(j).suffix in list_img:
-                rez_img.append(j) 
-                suffix_img.add(Path(j).suffix)      
-            elif Path(j).suffix in list_archive:
-                rez_archive.append(j)
-                suffix_archive.add(Path(j).suffix)
-            elif Path(j).suffix in list_video:
-                rez_video.append(j)
-                suffix_video.add(Path(j).suffix)
-            elif Path(j).suffix in list_music:
-                rez_music.append(j)
-                suffix_music.add(Path(j).suffix)
-            elif Path(j).suffix in list_documents:
-                rez_documents.append(j)
-                suffix_document.add(Path(j).suffix)
-            else:
-                rez_other.append(j) 
-                suffix_other.add(Path(j).suffix)  
+#Складаємо список знайдених суфіксів 
+def create_list_suffix():
+    for j in rez:
+           if Path(j).suffix in list_img:
+            rez_img.append(j)
+            suffix_img.add(Path(j).suffix)
+           elif Path(j).suffix in list_archive:
+            rez_archive.append(j)
+            suffix_archive.add(Path(j).suffix)
+           elif Path(j).suffix in list_video:
+            rez_video.append(j)
+            suffix_video.add(Path(j).suffix)
+           elif Path(j).suffix in list_music:
+            rez_music.append(j)
+            suffix_music.add(Path(j).suffix)
+           elif Path(j).suffix in list_documents:
+            rez_documents.append(j)
+            suffix_document.add(Path(j).suffix)
+           else:
+            rez_other.append(j)
+            suffix_other.add(Path(j).suffix)
 
-
-        #Виводимо повідомлення про знайдене:
-        if len(suffix_img) > 0:
-            print('__________________________________________________________')
-            print('__________________________________________________________')
-            print('Результат фото (знайдені розширення та відповідні файли):')
-            print('Розширення фото:')
-            for d in suffix_img:
-                print(d)
-            print('__________________________________________________________')
-            print('Файли фото:')
-            count_foto = 0
-            for g in rez_img:
-                rez_img[count_foto] = normalize('NFC', g)
-                print(g)
-                count_foto = count_foto +1                
+#Виводимо повідомлення про знайдене та створюємо папки
+def report_create_folder():
+    if len(suffix_img) > 0:
+        print('__________________________________________________________')
+        print('__________________________________________________________')
+        print('Результат фото (знайдені розширення та відповідні файли):')
+        print('Розширення фото:')
+        for d in suffix_img:
+            print(d)
+        print('__________________________________________________________')
+        print('Файли фото:')
+        count_foto = 0
+        for g in rez_img:
+            rez_img[count_foto] = normalize('NFC', g)
+            print(g)
+            count_foto = count_foto +1                
             create_folder(sys.argv[1], 'image_sorted')
-        if len(suffix_archive) > 0:
-            print('__________________________________________________________')
-            print('__________________________________________________________')
-            print('Результат архіви (знайдені розширення та відповідні файли):')
-            print('Розширення архівів:')
+    if len(suffix_archive) > 0:
+        print('__________________________________________________________')
+        print('__________________________________________________________')
+        print('Результат архіви (знайдені розширення та відповідні файли):')
+        print('Розширення архівів:')
             for h in suffix_archive:
                 print(h)
             print('__________________________________________________________')
@@ -166,6 +161,18 @@ def __sorting_files__():
                 print(m)  
                 count_other = count_other +1
             create_folder(sys.argv[1], 'other_sorted')
+
+#Робоча директорія для проведення розбору файлів
+def __sorting_files__():
+    try:
+        dyrectory_current = sys.argv[1]
+        analiz_files(dyrectory_current)
+        create_list_suffix() 
+        report_create_folder()       
+
+
+        #Виводимо повідомлення про знайдене:
+        
           
     except:
         print('Введіть шлях до папки')
