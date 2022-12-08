@@ -7,11 +7,9 @@ from unicodedata import normalize
 
 # Списки розширень для сортування
 list_img = ['.JPEG', '.jpeg', '.PNG', '.png', '.JPG', '.jpg', '.SVG', '.svg']
-list_archive = ['.rar', '.RAR', '.zip', '.ZIP',
-                '.gz', '.GZ', '.tar', '.TAR', '.7z', '.7Z']
+list_archive = ['.rar', '.RAR', '.zip', '.ZIP','.gz', '.GZ', '.tar', '.TAR', '.7z', '.7Z']
 list_video = ['.AVI', '.avi', '.MP4', '.mp4', '.MOV', '.mov', '.MKV', '.mkv']
-list_documents = ['.DOC', '.doc', '.DOCX', '.docs', '.TXT', '.txt',
-                  '.PDF', '.pdf', '.XLSX', '.xlsx', '.PPTX', '.pptx', '.xml', '.XML']
+list_documents = ['.DOC', '.doc', '.DOCX', '.docs', '.TXT', '.txt','.PDF', '.pdf', '.XLSX', '.xlsx', '.PPTX', '.pptx', '.xml', '.XML']
 list_music = ['.MP3', '.mp3', '.OGG', '.ogg', '.WAV', '.wav', '.AMR', '.amr']
 
 # Загальний список файлів
