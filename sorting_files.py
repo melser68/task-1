@@ -1,6 +1,6 @@
 from pathlib import *
 import shutil
-import sys, re
+import sys, re, rarfile, zipfile
 import rarfile
 import os
 from unicodedata import normalize
@@ -88,6 +88,26 @@ def move_files(rez_file, folder_move):
     for file_rez in rez_file:
         shutil.move(Path(sys.argv[1], file_rez ), folder_move)
 
+#Розпаковуємо архіви, якщо вони є
+def unpack_archive():
+    path_folder_archive = Path(sys.argv[1], 'archive_sorted')
+    name_str = str(q.split('.')[0])
+    if Path.exists(path_folder_archive):
+        for q in os.listdir(path_folder_archive):
+            
+            if Path(q).suffix == '.rar':
+                filename_for_unpack = Path.mkdir(Path(path_folder_archive) / name_str))
+                
+                rarfile.unpack_archive(Path(path_folder_archive,q), filename_for_unpack)
+            elif Path(q).suffix == '.zip':
+                
+                #print(Path(path_folder_archive), name_str)
+                Path.mkdir(Path(path_folder_archive) / name_str)
+                filename_for_unpack = Path((path_folder_archive),name_str)
+                #print(Path(path_folder_archive, q), 'fffffff')
+                #print(filename_for_unpack, 'sssssssssssssss')
+                #shutil.unpack_archive(Path(path_folder_archive, q), filename_for_unpack)
+
 # Виводимо повідомлення про знайдене та створюємо папки
 def report_create_folder():
     if len(suffix_img) > 0:
@@ -128,6 +148,7 @@ def report_create_folder():
             count_archive = count_archive + 1
         create_folder(sys.argv[1], 'archive_sorted')
         move_files(rez_archive, Path(sys.argv[1], 'archive_sorted'))
+        
     else:
         print('__________________________________________________________')
         print('Несортованих файлів типу "Архів" не знайдено.')
@@ -229,7 +250,7 @@ def __main__():
         analiz_files(dyrectory_current)
         create_list_suffix()
         report_create_folder()   
-        #print(list_ignore, 'Результат ігнор')     
+        unpack_archive()   
 
     except:
         print('Введіть шлях до папки')
