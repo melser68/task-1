@@ -90,23 +90,20 @@ def move_files(rez_file, folder_move):
 
 #Розпаковуємо архіви, якщо вони є
 def unpack_archive():
-    path_folder_archive = Path(sys.argv[1], 'archive_sorted')
-    name_str = str(q.split('.')[0])
-    if Path.exists(path_folder_archive):
-        for q in os.listdir(path_folder_archive):
-            
-            if Path(q).suffix == '.rar':
-                filename_for_unpack = Path.mkdir(Path(path_folder_archive) / name_str)
-                
-                rarfile.unpack_archive(Path(path_folder_archive,q), filename_for_unpack)
-            elif Path(q).suffix == '.zip':
-                
-                #print(Path(path_folder_archive), name_str)
-                Path.mkdir(Path(path_folder_archive) / name_str)
-                filename_for_unpack = Path((path_folder_archive),name_str)
-                #print(Path(path_folder_archive, q), 'fffffff')
-                #print(filename_for_unpack, 'sssssssssssssss')
-                #shutil.unpack_archive(Path(path_folder_archive, q), filename_for_unpack)
+    folder_archive = sys.argv[1] + '\\archive_sorted'
+    for archive in os.listdir(folder_archive):
+        if Path(archive).suffix == '.zip' or Path(archive).suffix == '.tar' or Path(archive).suffix == '.gz':
+            file_for_unpack = zipfile.ZipFile(str(folder_archive)+'\\'+archive)
+            file_for_unpack.extractall(str(folder_archive))
+            file_for_unpack.close
+        elif Path(archive).suffix == '.rar':
+            file_for_unpack = rarfile.RarFile(str(folder_archive)+'\\'+archive)
+            print(file_for_unpack.filename, type(file_for_unpack),'Шлях')
+            print(folder_archive, type(folder_archive))
+            file_for_unpack.extractall(str(folder_archive))
+            file_for_unpack.close()
+
+    
 
 # Виводимо повідомлення про знайдене та створюємо папки
 def report_create_folder():
@@ -148,11 +145,14 @@ def report_create_folder():
             count_archive = count_archive + 1
         create_folder(sys.argv[1], 'archive_sorted')
         move_files(rez_archive, Path(sys.argv[1], 'archive_sorted'))
+        unpack_archive()    
         
     else:
         print('__________________________________________________________')
         print('Несортованих файлів типу "Архів" не знайдено.')
         print('__________________________________________________________')
+    
+    
         
     if len(suffix_video) > 0:
         print('__________________________________________________________')
