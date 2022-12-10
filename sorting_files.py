@@ -96,7 +96,7 @@ def unpack_archive():
         for q in os.listdir(path_folder_archive):
             
             if Path(q).suffix == '.rar':
-                filename_for_unpack = Path.mkdir(Path(path_folder_archive) / name_str))
+                filename_for_unpack = Path.mkdir(Path(path_folder_archive) / name_str)
                 
                 rarfile.unpack_archive(Path(path_folder_archive,q), filename_for_unpack)
             elif Path(q).suffix == '.zip':
