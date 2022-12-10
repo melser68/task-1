@@ -1,9 +1,10 @@
 from pathlib import *
 import shutil
-import sys, re, rarfile, zipfile
+import sys, re, rarfile, zipfile, lzma, py7zr
 import rarfile
 import os
 from unicodedata import normalize
+
 
 # Списки розширень для сортування
 list_img = ['.JPEG', '.jpeg', '.PNG', '.png', '.JPG', '.jpg', '.SVG', '.svg']
@@ -93,14 +94,13 @@ def unpack_archive():
     folder_archive = sys.argv[1] + '\\archive_sorted'
     for archive in os.listdir(folder_archive):
         if Path(archive).suffix == '.zip' or Path(archive).suffix == '.tar' or Path(archive).suffix == '.gz':
-            file_for_unpack = zipfile.ZipFile(str(folder_archive)+'\\'+archive)
-            file_for_unpack.extractall(str(folder_archive))
+            file_for_unpack = zipfile.ZipFile(folder_archive +'\\'+archive)
+            file_for_unpack.extractall(folder_archive)
             file_for_unpack.close
-        elif Path(archive).suffix == '.rar':
-            file_for_unpack = rarfile.RarFile(str(folder_archive)+'\\'+archive)
-            print(file_for_unpack.filename, type(file_for_unpack),'Шлях')
-            print(folder_archive, type(folder_archive))
-            file_for_unpack.extractall(str(folder_archive))
+        elif Path(archive).suffix == '.7z':  
+            path_archive = folder_archive+'\\'+ archive 
+            file_for_unpack = py7zr.SevenZipFile(path_archive, mode='r')
+            file_for_unpack.extractall(folder_archive + '\\' + Path(archive).stem)
             file_for_unpack.close()
 
     
