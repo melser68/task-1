@@ -112,9 +112,8 @@ def unpack_archive():
             try:
                 Path.unlink(root_for_delete)
             except OSError as e:
-                print("Error: %s : %s" % (root_for_delete, e.strerror))            
-        else:
-            print('Архів ' + archive+ ' не можна розпакувати автоматично, розпакуйте вручну')
+                print("Error: %s : %s" % (root_for_delete, e.strerror))          
+        
 
     
 
