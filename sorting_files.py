@@ -89,19 +89,32 @@ def move_files(rez_file, folder_move):
     for file_rez in rez_file:
         shutil.move(Path(sys.argv[1], file_rez ), folder_move)
 
-#Розпаковуємо архіви, якщо вони є
+#Розпаковуємо архіви, якщо вони є, та видаляємо самі архіви після розпакування
 def unpack_archive():
     folder_archive = sys.argv[1] + '\\archive_sorted'
     for archive in os.listdir(folder_archive):
         if Path(archive).suffix == '.zip' or Path(archive).suffix == '.tar' or Path(archive).suffix == '.gz':
             file_for_unpack = zipfile.ZipFile(folder_archive +'\\'+archive)
             file_for_unpack.extractall(folder_archive)
-            file_for_unpack.close
+            file_for_unpack.close()
+            root_for_delete = Path(folder_archive + '\\'+archive)
+            try:
+                Path.unlink(root_for_delete)
+            except OSError as e:
+                print("Error: %s : %s" % (root_for_delete, e.strerror))                
+            
         elif Path(archive).suffix == '.7z':  
             path_archive = folder_archive+'\\'+ archive 
             file_for_unpack = py7zr.SevenZipFile(path_archive, mode='r')
             file_for_unpack.extractall(folder_archive + '\\' + Path(archive).stem)
             file_for_unpack.close()
+            root_for_delete = Path(folder_archive + '\\'+archive)
+            try:
+                Path.unlink(root_for_delete)
+            except OSError as e:
+                print("Error: %s : %s" % (root_for_delete, e.strerror))            
+        else:
+            print('Архів ' + archive+ ' не можна розпакувати автоматично, розпакуйте вручну')
 
     
 
@@ -144,8 +157,9 @@ def report_create_folder():
             print(k)
             count_archive = count_archive + 1
         create_folder(sys.argv[1], 'archive_sorted')
-        move_files(rez_archive, Path(sys.argv[1], 'archive_sorted'))
-        unpack_archive()    
+        move_files(rez_archive, Path(sys.argv[1], 'archive_sorted'))        
+        unpack_archive() 
+        
         
     else:
         print('__________________________________________________________')
