@@ -39,22 +39,29 @@ suffix_other = set()
 
 #Нормалізуємо назву файлу
 def normalize_file(name_file):
-    normalize('NKFD', name_file)
+    new_name_file = normalize('NKFD', name_file)
+    shutil.move(name_file, new_name_file)
 
-# Аналіз папки з файлами та ігнорування папок якщо в назві міститься "sorted"
+# Аналіз папки з файлами та ігнорування папок якщо в назві міститься "sorted"+ нормалізація
 def analiz_files(path_file):
     for i in os.listdir(path_file):
-        adres_string = str(Path(path_file + '\\' + i))     
+        adres_string = str(Path(path_file + '\\' + i))
+
+        if is_normalized('NFKD', adres_string)==False:
+            adres_string = normalize('NFKD', adres_string)        
+        
+        
         if re.search('sorted', adres_string) == None:
-            print(adres_string)
             if os.path.isdir(path_file + '\\' + i):
                 analiz_files(path_file + '\\' + i)
             else:
-                if is_normalized(i) == False:
+                if is_normalized('NFKD',i) == True:
+                    rez.append(i)
+                else:
                     normalize_file(i)
-                rez.append(i)
-                
-    return rez
+                    rez.append(i)
+    return rez      
+    
 
 
 # Створюємо папку для відсортованих файлів
@@ -138,7 +145,6 @@ def report_create_folder():
         print('Файли фото:')
         count_foto = 0
         for g in rez_img:
-            rez_img[count_foto] = normalize('NFC', g)
             print(g)
             count_foto = count_foto + 1            
         create_folder(sys.argv[1], 'image_sorted')
@@ -160,7 +166,6 @@ def report_create_folder():
         print('Файли архівів:')
         count_archive = 0
         for k in rez_archive:
-            rez_archive[count_archive] = normalize('NFC', k)
             print(k)
             count_archive = count_archive + 1
         create_folder(sys.argv[1], 'archive_sorted')
@@ -187,7 +192,6 @@ def report_create_folder():
         print('Файли відео:')
         count_video = 0
         for z in rez_video:
-            rez_video[count_video] = normalize('NFC', z)
             print(z)
             count_video = count_video + 1
         create_folder(sys.argv[1], 'video_sorted')
@@ -209,7 +213,6 @@ def report_create_folder():
         print('Файли музика:')
         count_music = 0
         for c in rez_music:
-            rez_music[count_music] = normalize('NFC', c)
             print(c)
             count_music = count_music + 1
         create_folder(sys.argv[1], 'music_sorted')
@@ -230,7 +233,6 @@ def report_create_folder():
         print('Файли документів:')
         count_documents = 0
         for b in rez_documents:
-            rez_documents[count_documents] = normalize('NFC', b)
             print(b)
             count_documents = count_documents + 1
         create_folder(sys.argv[1], 'documents_sorted')
@@ -251,7 +253,6 @@ def report_create_folder():
         print('Файли інше:')
         count_other = 0
         for m in rez_other:
-            rez_other[count_other] = normalize('NFC', m)
             print(m)
             count_other = count_other + 1
         create_folder(sys.argv[1], 'other_sorted')
@@ -263,12 +264,11 @@ def report_create_folder():
 
 
 #Видаляємо пусті папки з-під файлів
-def delete_empty_folder(path_for_delete, level=1):
-    
+def delete_empty_folder(path_for_delete):
     try:        
         for i in os.listdir(path_for_delete):
-            adres_path = Path(path_for_delete + '\\' + i)            
-            if re.search('.sorted', str(adres_path)) == None:                
+            adres_path = Path(path_for_delete + '\\' + i)
+            if re.search('sorted', str(adres_path)) == None:                
                 try:
                     shutil.rmtree(adres_path)
                 except OSError as e:
@@ -285,8 +285,8 @@ def __main__():
         analiz_files(dyrectory_current)
         create_list_suffix()
         report_create_folder()   
-        unpack_archive() 
-        delete_empty_folder(dyrectory_current)  
+        #unpack_archive() 
+        #delete_empty_folder(dyrectory_current)  
 
     except:
         print('Введіть шлях до папки')
