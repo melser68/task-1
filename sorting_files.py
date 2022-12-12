@@ -3,7 +3,7 @@ import shutil
 import sys, re, rarfile, zipfile, lzma, py7zr
 import rarfile
 import os
-from unicodedata import normalize
+from unicodedata import normalize, is_normalized
 
 
 # Списки розширень для сортування
@@ -37,16 +37,23 @@ suffix_document = set()
 suffix_music = set()
 suffix_other = set()
 
+#Нормалізуємо назву файлу
+def normalize_file(name_file):
+    normalize('NKFD', name_file)
 
 # Аналіз папки з файлами та ігнорування папок якщо в назві міститься "sorted"
-def analiz_files(path_file, level=1):
+def analiz_files(path_file):
     for i in os.listdir(path_file):
-        adres_string = str(Path(path_file + '\\' + i))  
-        if re.search('.sorted', adres_string) == None:
+        adres_string = str(Path(path_file + '\\' + i))     
+        if re.search('sorted', adres_string) == None:
+            print(adres_string)
             if os.path.isdir(path_file + '\\' + i):
-                analiz_files(path_file + '\\' + i, level=level+1)
+                analiz_files(path_file + '\\' + i)
             else:
+                if is_normalized(i) == False:
+                    normalize_file(i)
                 rez.append(i)
+                
     return rez
 
 
@@ -59,8 +66,6 @@ def create_folder(path_folder, name_folder):
         #print(list_ignore)
 
 # Складаємо список знайдених суфіксів
-
-
 def create_list_suffix():
     for j in rez:
         if Path(j).suffix in list_img:
@@ -91,28 +96,31 @@ def move_files(rez_file, folder_move):
 
 #Розпаковуємо архіви, якщо вони є, та видаляємо самі архіви після розпакування
 def unpack_archive():
-    folder_archive = sys.argv[1] + '\\archive_sorted'
-    for archive in os.listdir(folder_archive):
-        if Path(archive).suffix == '.zip' or Path(archive).suffix == '.tar' or Path(archive).suffix == '.gz':
-            file_for_unpack = zipfile.ZipFile(folder_archive +'\\'+archive)
-            file_for_unpack.extractall(folder_archive)
-            file_for_unpack.close()
-            root_for_delete = Path(folder_archive + '\\'+archive)
-            try:
-                Path.unlink(root_for_delete)
-            except OSError as e:
-                print("Error: %s : %s" % (root_for_delete, e.strerror))                
+    try:
+        folder_archive = sys.argv[1] + '\\archive_sorted'
+        for archive in os.listdir(folder_archive):
+            if Path(archive).suffix == '.zip' or Path(archive).suffix == '.tar' or Path(archive).suffix == '.gz':
+                 file_for_unpack = zipfile.ZipFile(folder_archive +'\\'+archive)
+                 file_for_unpack.extractall(folder_archive)
+                 file_for_unpack.close()
+                 root_for_delete = Path(folder_archive + '\\'+archive)
+                 try:
+                    Path.unlink(root_for_delete)
+                 except OSError as e:
+                    print("Error: %s : %s" % (root_for_delete, e.strerror))                
             
-        elif Path(archive).suffix == '.7z':  
-            path_archive = folder_archive+'\\'+ archive 
-            file_for_unpack = py7zr.SevenZipFile(path_archive, mode='r')
-            file_for_unpack.extractall(folder_archive + '\\' + Path(archive).stem)
-            file_for_unpack.close()
-            root_for_delete = Path(folder_archive + '\\'+archive)
-            try:
-                Path.unlink(root_for_delete)
-            except OSError as e:
-                print("Error: %s : %s" % (root_for_delete, e.strerror))          
+            elif Path(archive).suffix == '.7z':
+                path_archive = folder_archive+'\\'+ archive 
+                file_for_unpack = py7zr.SevenZipFile(path_archive, mode='r')
+                file_for_unpack.extractall(folder_archive + '\\' + Path(archive).stem)
+                file_for_unpack.close()
+                root_for_delete = Path(folder_archive + '\\'+archive)
+                try:
+                    Path.unlink(root_for_delete)
+                except OSError as e:
+                    print("Error: %s : %s" % (root_for_delete, e.strerror))   
+    except:
+        print('Архівів для розпакування не знайдено')       
         
 
     
@@ -254,16 +262,31 @@ def report_create_folder():
         print('__________________________________________________________')
 
 
+#Видаляємо пусті папки з-під файлів
+def delete_empty_folder(path_for_delete, level=1):
+    
+    try:        
+        for i in os.listdir(path_for_delete):
+            adres_path = Path(path_for_delete + '\\' + i)            
+            if re.search('.sorted', str(adres_path)) == None:                
+                try:
+                    shutil.rmtree(adres_path)
+                except OSError as e:
+                    print("Error: %s : %s" % (str(adres_path), e.strerror))                    
+    except:
+        print('Папок для видалення не знайдено')     
+
+
+
 # Головна процедура для проведення розбору файлів
-
-
 def __main__():
     try:
         dyrectory_current = sys.argv[1]
         analiz_files(dyrectory_current)
         create_list_suffix()
         report_create_folder()   
-        unpack_archive()   
+        unpack_archive() 
+        delete_empty_folder(dyrectory_current)  
 
     except:
         print('Введіть шлях до папки')
