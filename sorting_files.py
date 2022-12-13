@@ -39,27 +39,25 @@ suffix_other = set()
 
 #Нормалізуємо назву файлу
 def normalize_file(name_file):
-    new_name_file = normalize('NKFD', name_file)
+    new_name_file = normalize('NFC', name_file)
     shutil.move(name_file, new_name_file)
 
 # Аналіз папки з файлами та ігнорування папок якщо в назві міститься "sorted"+ нормалізація
 def analiz_files(path_file):
     for i in os.listdir(path_file):
-        adres_string = str(Path(path_file + '\\' + i))
-
-        if is_normalized('NFKD', adres_string)==False:
-            adres_string = normalize('NFKD', adres_string)        
-        
+        if is_normalized('NFC', i) == False:
+            print('Нормалізуємо назву файлу ', i)
+            normalize(i)
+        adres_string = str(Path(path_file + '\\' + i))      
         
         if re.search('sorted', adres_string) == None:
             if os.path.isdir(path_file + '\\' + i):
+                
                 analiz_files(path_file + '\\' + i)
             else:
-                if is_normalized('NFKD',i) == True:
-                    rez.append(i)
-                else:
-                    normalize_file(i)
-                    rez.append(i)
+                rez.append(adres_string)
+                
+                
     return rez      
     
 
@@ -70,11 +68,11 @@ def create_folder(path_folder, name_folder):
     if not Path.exists(new_folder):
         Path.mkdir(new_folder)
         list_ignore.add(new_folder)
-        #print(list_ignore)
+        
 
 # Складаємо список знайдених суфіксів
 def create_list_suffix():
-    for j in rez:
+    for j in rez:        
         if Path(j).suffix in list_img:
             rez_img.append(j)
             suffix_img.add(Path(j).suffix)
@@ -97,8 +95,7 @@ def create_list_suffix():
 
 #Переносимо файли у відповідні папки
 def move_files(rez_file, folder_move):
-    
-    for file_rez in rez_file:
+    for file_rez in rez_file:        
         shutil.move(Path(sys.argv[1], file_rez ), folder_move)
 
 #Розпаковуємо архіви, якщо вони є, та видаляємо самі архіви після розпакування
@@ -145,11 +142,14 @@ def report_create_folder():
         print('Файли фото:')
         count_foto = 0
         for g in rez_img:
-            print(g)
+            list_split_name = g.split('\\')
+            print(list_split_name[-1])
+            #print(g)
             count_foto = count_foto + 1            
         create_folder(sys.argv[1], 'image_sorted')
+        
         move_files(rez_img, Path(sys.argv[1], 'image_sorted'))
-
+        
     else:
         print('__________________________________________________________')
         print('Несортованих файлів типу "Зображення" не знайдено.')
@@ -166,7 +166,9 @@ def report_create_folder():
         print('Файли архівів:')
         count_archive = 0
         for k in rez_archive:
-            print(k)
+            list_split_name = k.split('\\')
+            print(list_split_name[-1])
+            #print(k)
             count_archive = count_archive + 1
         create_folder(sys.argv[1], 'archive_sorted')
         move_files(rez_archive, Path(sys.argv[1], 'archive_sorted'))        
@@ -192,7 +194,9 @@ def report_create_folder():
         print('Файли відео:')
         count_video = 0
         for z in rez_video:
-            print(z)
+            list_split_name = z.split('\\')
+            print(list_split_name[-1])
+            #print(z)
             count_video = count_video + 1
         create_folder(sys.argv[1], 'video_sorted')
         move_files(rez_video, Path(sys.argv[1], 'video_sorted'))
@@ -213,7 +217,9 @@ def report_create_folder():
         print('Файли музика:')
         count_music = 0
         for c in rez_music:
-            print(c)
+            list_split_name = c.split('\\')
+            print(list_split_name[-1])
+            #print(c)
             count_music = count_music + 1
         create_folder(sys.argv[1], 'music_sorted')
         move_files(rez_music, Path(sys.argv[1], 'music_sorted'))
@@ -227,13 +233,15 @@ def report_create_folder():
         print('Результат документи (знайдені розширення та відповідні файли):')
         print('__________________________________________________________')
         print('Розширення документи')
-        for v in suffix_document:
+        for v in suffix_document:           
             print(v)
         print('__________________________________________________________')
         print('Файли документів:')
         count_documents = 0
         for b in rez_documents:
-            print(b)
+            list_split_name = b.split('\\')
+            print(list_split_name[-1])
+            #print(b)
             count_documents = count_documents + 1
         create_folder(sys.argv[1], 'documents_sorted')
         move_files(rez_documents, Path(sys.argv[1], 'documents_sorted'))
@@ -253,7 +261,9 @@ def report_create_folder():
         print('Файли інше:')
         count_other = 0
         for m in rez_other:
-            print(m)
+            list_split_name = m.split('\\')
+            print(list_split_name[-1])
+            #print(m)
             count_other = count_other + 1
         create_folder(sys.argv[1], 'other_sorted')
         move_files(rez_other, Path(sys.argv[1], 'other_sorted'))
@@ -265,6 +275,7 @@ def report_create_folder():
 
 #Видаляємо пусті папки з-під файлів
 def delete_empty_folder(path_for_delete):
+    
     try:        
         for i in os.listdir(path_for_delete):
             adres_path = Path(path_for_delete + '\\' + i)
@@ -285,8 +296,8 @@ def __main__():
         analiz_files(dyrectory_current)
         create_list_suffix()
         report_create_folder()   
-        #unpack_archive() 
-        #delete_empty_folder(dyrectory_current)  
+        unpack_archive() 
+        delete_empty_folder(dyrectory_current)  
 
     except:
         print('Введіть шлях до папки')
