@@ -18,8 +18,6 @@ list_music = ['.MP3', '.mp3', '.OGG', '.ogg', '.WAV', '.wav', '.AMR', '.amr']
 # Загальний список файлів
 rez = []
 
-# Список ігноруємих папок
-list_ignore = set()
 
 # Списки відсортованих файлів
 rez_img = []
@@ -67,7 +65,7 @@ def create_folder(path_folder, name_folder):
     new_folder = Path(path_folder) / name_folder
     if not Path.exists(new_folder):
         Path.mkdir(new_folder)
-        list_ignore.add(new_folder)
+        
         
 
 # Складаємо список знайдених суфіксів
