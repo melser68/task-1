@@ -12,16 +12,16 @@ while operand_grant == False:
 
 list_operator = ('+', '-', '/', '*')
 operator_grant = False
-while operator_grant == False:
-    operator = input('Введіть дію (+, -, *, /)')
-    count = 0
-    for i in list_operator:
-        if operator == i:
-            operator_grant = True
-        else:
-            if count == 0:
-                print('Введена некоректна дія, повторіть введення.')
-                count += 1
+operator = input('Введіть дію (+, -, *, /)')
+while operator_grant == False:    
+    
+        for i in list_operator:
+            if operator == i:
+                operator_grant = True   
+
+        if operator_grant == False:
+            print('Введена некоректна дія, повторіть введення.')
+            operator = input('Введіть дію (+, -, *, /)')
 
 operand_1 = input('Введіть друге число: ')
 while operand_1_grant == False:
