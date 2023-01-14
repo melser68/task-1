@@ -1,11 +1,11 @@
-result = 0
+
 operand = None
 operator = None
 wait_for_number = True
 operators = ('+', '-', '*', '/', '=')
 data_input = ''
 rezult_list = list()
-index_count = 0
+
 
 
 # Перевірка чи операнд це число
@@ -81,28 +81,36 @@ def text_operator():
 
 # Основна процедура
 
-    
-text_operand()  
+def main():  
+    index_count = 0
+    result = 0
+    text_operand()  
 
-for i in rezult_list:
-    try:
-        i = int(i)
-        if index_count == 0:
-            result += i
+    for i in rezult_list:
+        try:
+            i = int(i)
+            if index_count == 0:
+                result += i
+                index_count += 1
+            else:
+                if znak == '+':
+                    result = result + i
+                elif znak == '-':
+                    result = result - i
+                elif znak == '/':
+                    result = result / i
+                elif znak == '*':
+                    result = result * i
+                index_count += 1
+        except:
+            znak = i
             index_count += 1
-        else:
-            if znak == '+':
-                result = result + i
-            elif znak == '-':
-                result = result - i
-            elif znak == '/':
-                result = result / i
-            elif znak == '*':
-                result = result * i
-            index_count += 1
-    except:
-        znak = i
-        index_count += 1
-print('Результат: ', result)
+    print('Результат: ', result)
+    chois = input ('Повторити ? (yes/no)  ').lower()
+    if chois == 'yes':
+        rezult_list.clear()
+        main()
+main()
+
     
 
